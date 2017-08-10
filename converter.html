@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>1.13 Converter</title>
+    <script>
+    
+        function parse(){
+            
+            var inputString = document.getElementById("inputArea").value;
+            
+            var inputCommands = inputString.split("\n");
+            
+            var commandsNew = [];
+            for(var line = 0; line < inputCommands.length; line++)
+            {
+                var commandOld = inputCommands[line].split(" ");
+                var commandNew = "";
+                
+                
+                
+                /*    Checking Selectors      */
+                for(var I = 0; I < commandOld.length; I++)
+                {
+                    if(commandOld[I].startsWith("@"))
+                    {
+                        var sel = commandOld[I];
+                        var selType = sel.substr(1, 1); 
+                        var selArg = sel.substr(sel.indexOf('['));
+                        console.log(sel);
+                       console.log(selType);
+                       console.log(selArg);
+                        var argNewList = [];
+                        
+                       var selArgList = selArg.substr(1,selArg.length - 1).split(",");
+                        console.log(selArgList);
+                        for(var arg = 0; arg > selArgList.length; arg++)
+                        {
+                            /* Search Arguments */
+                            var argNew = "";
+                            //Gamemode
+                            if(selArgList[arg].startsWith("m"))
+                            {
+                                var argument = selArgList[arg];
+                                var gamemode = argument.substr(2);
+                                if(gamemode == "0" || gamemode == "s")
+                                {
+                                    gamemode = "survival"
+                                }else if(gamemode == "1" || gamemode == "c")
+                                {
+                                    gamemode = "creative"
+                                }else if(gamemode == "2" || gamemode == "a")
+                                {
+                                    gamemode = "adventure"
+                                }else if(gamemode == "3" || gamemode == "sp")
+                                {
+                                    gamemode = "spectator"
+                                }
+                                argNew = "gamemode="+gamemode;
+                                argNewList.push(argNew);
+                            }
+                            
+                            //level (xp)
+                           /* if(selArgList[arg].startsWith("l"))
+                            {
+                                var argument = selArgList[arg];
+                                var level = "";
+                                
+                                if(argument.startsWith("lm"))
+                                {
+                                    
+                                }
+                                
+                                
+                                
+                                
+                                argnew = "level="+level
+                            }*/
+                            
+                            
+                            
+                            
+                        }
+                    }
+                }
+                
+                
+                
+                
+                
+                
+                
+                /*    Checking Blocks      */
+                
+                
+                
+                
+                /*    Checking Items     */
+                
+                
+                
+                /*    Checking Commands      */
+                
+                
+                //Gamemode
+                if(commandOld[0] == "gamemode")
+                {
+                    var gamemode = "";
+                    var selector = commandOld[2];
+                    if(commandOld[1] == "s" || commandOld[1] == "0")
+                    {
+                        gamemode = "survival";
+                    }else if(commandOld[1] == "c" || commandOld[1] == "1")
+                    {
+                        gamemode = "creative";
+                    }else if(commandOld[1] == "a" || commandOld[1] == "2")
+                    {
+                        gamemode = "adventure";
+                    }else if(commandOld[1] == "sp" || commandOld[1] == "3")
+                    {
+                        gamemode = "spectator";
+                    }
+                    
+                    if(selector != null)
+                    {
+                       commandNew = "gamemode " + gamemode + " " + selector; 
+                    }else{
+                        commandNew = "gamemode " + gamemode;
+                    }
+                    
+                    console.log(commandNew);
+                }
+                
+                
+                //difficulty
+                if(commandOld[0] == "difficulty")
+                {
+                    var diff = "";
+                    var selector = commandOld[2];
+                    
+                    if(commandOld[1] == "p" || commandOld[1] == "0")
+                    {
+                        diff = "peacefull";
+                    }else if(commandOld[1] == "e" || commandOld[1] == "1")
+                    {
+                        diff = "easy";
+                    }else if(commandOld[1] == "n" || commandOld[1] == "2")
+                    {
+                        diff = "normal";
+                    }else if(commandOld[1] == "h" || commandOld[1] == "3")
+                    {
+                        diff = "hard";
+                    }
+                    commandNew = "difficulty " + diff;
+                }
+                
+                
+                //functions
+                if(commandOld[0] == "function")
+                {
+                    var functionName = commandOld[1];
+                    if(commandOld[2] == "if")
+                    {
+                        
+                        commandNew = "execute " + commandOld[2] + " entity " + commandOld[3] + " function " + functionName;
+                        
+                    }  
+                    if(commandOld[2] == "unless")
+                    {
+                        
+                        commandNew = "execute " + commandOld[2] + " " + commandOld[3] + " function " + functionName;
+                        
+                    } 
+                }
+                
+                if(commandOld[0] == "execute")
+                {
+                    var selector = commandOld[1];
+                    var locationX = commandOld[2];
+                    var locationY = commandOld[3];
+                    var locationZ = commandOld[4];
+                    if(commandOld[5] == "detect")
+                    {
+                        var detectLocationX = commandOld[6];
+                        var detectLocationY = commandOld[7];
+                        var detectLocationZ = commandOld[8];
+                        var block = "stone";//parseBlock(commandOld[9],commandOld[10]); //stone
+                        var detectCommand = commandOld.slice(11).join(" ");
+                        
+                        commandNew = "execute as " + selector + " execute @s execute if block " + detectLocationX + " " + detectLocationY + " " + detectLocationZ + " " + block + " " + detectCommand;
+                    }
+                    if(commandOld[5] == "function")
+                    {
+                        var functionName = commandOld[6];
+                        commandNew = "execute if entity " + selector + " functon " + functionName;
+                    }
+                    
+                }
+                
+                
+                
+                //Effect
+                if(commandOld[0] == "effect")
+                {
+                    var selector = commandOld[1];
+                    var effectName = commandOld.slice(2).join(" ")
+                    
+                    if(effectName == "clear")
+                    {
+                        commandNew = "effect clear " + selector;
+                    }else{
+                        commandNew = "effect give " + selector + " " + effectName;
+                    }
+                }
+                
+                
+                //
+                
+                
+                
+                commandsNew.push(commandNew);
+                console.log(commandsNew);
+            }
+            document.getElementById("outputArea").value = commandsNew.join("\n");
+            
+        }
+        
+        
+        
+        
+    </script>
+</head>
+<body>
+    <textarea id="inputArea" cols="30" rows="10" oninput="parse();"></textarea>
+    <input type="submit" onClick="parse();"></input><br>
+    <textarea id="outputArea" cols="30" rows="10"></textarea>
+</body>
+</html>
